@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Special Question ✨</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffe5ec 0%, #ffc2d1 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Container for the question */
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 30px 20px;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(255, 182, 193, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            max-width: 90%;
+            width: 340px;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .emoji {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            display: block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        h1 {
+            color: #ff477e;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            line-height: 1.4;
+            font-weight: 600;
+        }
+
+        /* Button Layout */
+        .btn-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            height: 60px;
+            position: relative;
+        }
+
+        .btn {
+            border: none;
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.1s ease;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        #yesBtn {
+            background-color: #ff477e;
+            color: white;
+            z-index: 10;
+        }
+
+        #noBtn {
+            background-color: #f0f0f0;
+            color: #555;
+            position: absolute;
+            transition: all 0.2s ease-out;
+            z-index: 999;
+            touch-action: none; /* Prevents default mobile scrolling when touched */
+        }
+
+        /* Success Screen State */
+        .success-content {
+            display: none;
+        }
+
+        .success-content h1 {
+            color: #ff477e;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Mobile Only Warning overlay */
+        @media (min-width: 769px) {
+            body::before {
+                content: "📱 Please open this link on a mobile device for the best experience!";
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: #fff;
+                color: #ff477e;
+                z-index: 99999;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 1.5rem;
+                font-weight: bold;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="mainCard">
+        <!-- Question Screen -->
+        <div class="question-content" id="questionContent">
+            <span class="emoji">🌸</span>
+            <h1>Will you be my bridesmaid?</h1>
+            <div class="btn-container">
+                <button class="btn" id="yesBtn">Yes</button>
+                <button class="btn" id="noBtn">No</button>
+            </div>
+        </div>
+
+        <!-- Success Screen -->
+        <div class="success-content" id="successContent">
+            <span class="emoji">🥳🎉💖</span>
+            <h1>Yay! I can't wait to celebrate with you!</h1>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const questionContent = document.getElementById('questionContent');
+        const successContent = document.getElementById('successContent');
+
+        // Function to move the "No" button to a random spot on the viewport
+        function moveNoButton(e) {
+            // Prevent accidental clicks or zoom on mobile
+            if (e) e.preventDefault(); 
+
+            // Calculate boundary limits so the button stays fully within the screen view
+            const padding = 20;
+            const buttonWidth = noBtn.offsetWidth;
+            const buttonHeight = noBtn.offsetHeight;
+            
+            const maxX = window.innerWidth - buttonWidth - padding;
+            const maxY = window.innerHeight - buttonHeight - padding;
+
+            // Generate random positions
+            let randomX = Math.floor(Math.random() * (maxX - padding)) + padding;
+            let randomY = Math.floor(Math.random() * (maxY - padding)) + padding;
+
+            // Apply fixed positioning style once triggered so it can teleport anywhere outside the card container
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        // Event listeners handling mobile touch interactions
+        // 'touchstart' intercepts the tap right before the click even registers
+        noBtn.addEventListener('touchstart', moveNoButton);
+        noBtn.addEventListener('touchend', (e) => e.preventDefault());
+        noBtn.addEventListener('click', moveNoButton);
+
+        // Action when they click YES
+        yesBtn.addEventListener('click', () => {
+            questionContent.style.display = 'none';
+            successContent.style.display = 'block';
+            
+            // Clean up the running button just in case
+            noBtn.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
